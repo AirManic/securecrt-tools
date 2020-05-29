@@ -45,7 +45,17 @@ def script_main(session):
     session.start_cisco_session()
 
     supported_os = ["IOS", "NXOS", "ASA"]
-    if session.os in supported_os:
+
+    if session.os == "AireOS":
+        send_cmd = "show run-config"
+        filename = session.create_output_filename(send_cmd)
+        send_cmd = "show run-config"
+        session.write_output_to_file(send_cmd, filename)
+        send_cmd = "show run-config commands"
+        session.write_output_to_file(send_cmd, filename)
+        send_cmd = "show run-config startup-commands"
+        session.write_output_to_file(send_cmd, filename)
+    elif session.os in supported_os:
         send_cmd = "show run"
         filename = session.create_output_filename(send_cmd)
         session.write_output_to_file(send_cmd, filename)
