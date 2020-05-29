@@ -36,7 +36,7 @@ Value WLAN_IngressInterface (.*)
 Value WLAN_IPv4ACL (.*)
 Value WLAN_IPv6ACL (.*)
 Value WLAN_Layer2ACL (.*)
-Value WLAN_DNSStatus (.*)
+Value WLAN_mDNSStatus (.*)
 Value WLAN_mDNSProfileName (.*)
 Value WLAN_DHCPServer (.*)
 Value WLAN_CentralNATPeerPeerBlocking (.*)
@@ -224,7 +224,7 @@ Start
   ^\s*WLAN\s+IPv4\s+ACL\s*[\.]+\s*${WLAN_IPv4ACL}
   ^\s*WLAN\s+IPv6\s+ACL\s*[\.]+\s*${WLAN_IPv6ACL}
   ^\s*WLAN\s+Layer2\s+ACL\s*[\.]+\s*${WLAN_Layer2ACL}
-  ^\s*mDNS\s+Status\s*[\.]+\s*${WLAN_DNSStatus}
+  ^\s*mDNS\s+Status\s*[\.]+\s*${WLAN_mDNSStatus}
   ^\s*mDNS\s+Profile\s+Name\s*[\.]+\s*${WLAN_mDNSProfileName}
   ^\s*DHCP\s+Server\s*[\.]+\s*${WLAN_DHCPServer}
   ^\s*Central\s+NAT\s+Peer-Peer\s+Blocking\s*[\.]+\s*${WLAN_CentralNATPeerPeerBlocking}

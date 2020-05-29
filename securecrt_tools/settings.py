@@ -1,4 +1,5 @@
-import ConfigParser
+import future
+import future.moves.configparser as ConfigParser
 import os
 
 

@@ -48,18 +48,18 @@ def script_main(session):
     session.validate_os(["AireOS"])
 
     # Get additional information we'll need
-    ap_summ_table = get_ap_summ_table(session)
+    info_list = get_fc_detail(session)
 
-    # TODO grogier show ap config general extract
+    # TODO show flexconnect summary / show flexconnect detail
 
     output_filename = session.create_output_filename("ap-summ", ext=".csv")
-    utilities.list_of_lists_to_csv(ap_summ_table, output_filename)
+    utilities.list_of_lists_to_csv(info_list, output_filename)
 
     # Return terminal parameters back to the original state.
     session.end_cisco_session()
 
 
-def get_ap_summ_table(session):
+def get_fc_detail(session):
     """
     A function that captures the WLC AireOS ap summary table and returns an output list
 
@@ -70,11 +70,10 @@ def get_ap_summ_table(session):
     :rtype: list
     """
     send_cmd = "show ap summary"
+    raw_ap_summ = session.get_command_output(send_cmd)
 
     # TextFSM template for parsing "show ap summary" output
-    template_file = session.script.get_template("cisco_aireos_show_ap_summary_table.template")
-
-    raw_ap_summ = session.get_command_output(send_cmd)
+    template_file = session.script.get_template("cisco_aireos_show_ap_summary.template")
     ap_summ_table = utilities.textfsm_parse_to_list(raw_ap_summ, template_file, add_header=True)
 
     return ap_summ_table
