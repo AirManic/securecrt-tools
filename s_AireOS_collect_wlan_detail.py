@@ -31,7 +31,7 @@ def script_main(session):
     | Morphed: Gordon Rogier grogier@cisco.com
     | Framework: Jamie Caesar jcaesar@presidio.com
 
-    This script will
+    This script will capture the WLC AireOS wlan & remote-lan & guest-lan details and returns an output list
 
     :param session: A subclass of the sessions.Session object that represents this particular script session (either
                 SecureCRTSession or DirectSession)
@@ -81,23 +81,31 @@ def get_wlan_detail(session, to_cvs=False):
     glan_summary_dict = utilities.textfsm_parse_to_dict(raw_glan_summary, template_file)
 
     output_raw = ''
+    output_list = []
     for wlan_entry in wlan_summary_dict:
         send_cmd = "show wlan " + format(wlan_entry["WLAN_Identifier"])
-        output_raw += session.get_command_output(send_cmd)
+        output_list.append(session.get_command_output(send_cmd))
 
     raw_rlan_detail = ''
     for wlan_entry in rlan_summary_dict:
         send_cmd = "show remote-lan " + format(wlan_entry["WLAN_Identifier"])
-        output_raw += session.get_command_output(send_cmd)
+        output_list.append(session.get_command_output(send_cmd))
 
     raw_glan_detail = ''
     for wlan_entry in glan_summary_dict:
         send_cmd = "show guest-lan " + format(wlan_entry["WLAN_Identifier"])
-        output_raw += session.get_command_output(send_cmd)
+        output_list.append(session.get_command_output(send_cmd))
 
-    # TextFSM template for parsing "show wlan <WLAN-ID>" output
-    template_file = session.script.get_template("cisco_aireos_show_wlan_detail.template")
-    output = utilities.textfsm_parse_to_list(output_raw, template_file, add_header=True)
+    output = []
+    first = True
+    for output_raw in output_list:
+        # TextFSM template for parsing "show wlan <WLAN-ID>" output
+        template_file = session.script.get_template("cisco_aireos_show_wlan_detail.template")
+        if first:
+            output = utilities.textfsm_parse_to_list(output_raw, template_file, add_header=True)
+            first = False
+        else:
+            output.append(utilities.textfsm_parse_to_list(output_raw, template_file, add_header=False)[0])
 
     if to_cvs:
         output_filename = session.create_output_filename("wlan-detail", ext=".csv")

@@ -658,7 +658,7 @@ class CRTSession(Session):
 
         lower_version = raw_version.lower()
 
-        if "pid: air-ct" in lower_version:
+        if "pid: air-ct" in lower_version or "pid: isr-ap" in lower_version:
             version = "AireOS"
         elif "cisco ios xe" in lower_version:
             version = "IOS"
@@ -991,7 +991,7 @@ class DebugSession(Session):
         self.logger.debug("<START> Set Hostname: {0}".format(self.hostname))
 
         # Detect the OS of the device, because outputs will differ per OS
-        valid_os = ["AireOS", "IOS", "NXOS", "ASA"]
+        valid_os = ["AireOS", "IOS", "IOS-XR", "NXOS", "ASA"]
         response = ""
         while response not in valid_os:
             response = raw_input("Select OS ({0}): ".format(str(valid_os)))
@@ -1126,7 +1126,9 @@ class DebugSession(Session):
 
         self.logger.debug("<SEND CONFIG> Final command list:\n {0}".format(command_string))
 
-        output_filename = self.create_output_filename("CONFIG_RESULT")
+        if not output_filename:
+            output_filename = self.create_output_filename("CONFIG_RESULT")
+
         config_results = command_string
         with open(output_filename, 'w') as output_file:
             self.logger.debug("<SEND CONFIG> Writing output to: {0}".format(output_filename))
