@@ -92,6 +92,18 @@ def script_main(session):
         if intf in desc_table.keys():
             desc = desc_table[intf]
 
+        duplex = ""
+        if intf_entry[4]:
+            duplex = intf_entry[4]
+
+        speed = ""
+        if intf_entry[5]:
+            speed = intf_entry[5]
+
+        intf_type = ""
+        if intf_entry[6]:
+            intf_type = intf_entry[6]
+
         # Record upsteam information for routed ports
         if intf_entry[3] == 'routed':
             vlan = intf_entry[3]
@@ -111,10 +123,10 @@ def script_main(session):
                             pass
                         except socket.herror:
                             pass
-                    output_line = [intf, state, mac, mac_vendor, fqdn, ip, vlan, desc]
+                    output_line = [intf, state, mac, mac_vendor, fqdn, ip, vlan, desc, speed, duplex, intf_type]
                     output.append(output_line)
             else:
-                output_line = [intf, state, mac, mac_vendor, fqdn, ip, vlan, desc]
+                output_line = [intf, state, mac, mac_vendor, fqdn, ip, vlan, desc, speed, duplex, intf_type]
                 output.append(output_line)
 
         # Record all information for L2 ports
@@ -133,15 +145,16 @@ def script_main(session):
                             pass
                 if mac and mac_lookup:
                     mac_vendor = mac_to_vendor(mac_lookup_table, mac)
-                output_line = [intf, state, mac, mac_vendor, fqdn, ip, vlan, desc]
+                output_line = [intf, state, mac, mac_vendor, fqdn, ip, vlan, desc, speed, duplex, intf_type]
                 output.append(output_line)
 
         else:
-            output_line = [intf, state, None, None, None, None, None, desc]
+            output_line = [intf, state, None, None, None, None, None, desc, speed, duplex, intf_type]
             output.append(output_line)
 
     output.sort(key=lambda x: utilities.human_sort_key(x[0]))
-    output.insert(0, ["Interface", "Status", "MAC", "MAC Vendor", "DNS Name", "IP Address", "VLAN", "Description"])
+    output.insert(0, ["Interface", "Status", "MAC", "MAC Vendor", "DNS Name", "IP Address", "VLAN", "Description",
+                      "Speed", "Duplex", "Type"])
     output_filename = session.create_output_filename("PortMap", ext=".csv")
     utilities.list_of_lists_to_csv(output, output_filename)
 
